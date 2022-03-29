@@ -14,9 +14,11 @@ for (let y = 0; y < spielfeldsize; y++) {
     feld[y] = [];
     for (let x = 0; x < spielfeldsize; x++) {
         var nextnummer = Math.round(Math.random());
-        if (nextnummer == 1) {
-            feld[y][x] = nextnummer;
-        }
+        var rotationgen = Math.round(Math.random(0, 3));
+        //feld[y][x] = nextnummer;
+        var gennummer = nextnummer + '' + rotationgen;
+        console.log(gennummer);
+        feld[y][x] = gennummer;
     }
 }
 
@@ -26,13 +28,13 @@ var player = {
     img: new Image(),
 
     //score: 0,
-    setPlayer: function() {
+    setPlayer: function () {
         feld[this.y][this.x] = 2;
     },
-    liftPlayer: function() {
+    liftPlayer: function () {
         feld[this.y][this.x] = 0;
     },
-    movePlayer: function(dx, dy) {
+    movePlayer: function (dx, dy) {
         /**Das ergibt alles keinen Sinn
          * help
          * me
@@ -44,7 +46,7 @@ var player = {
             player.setPlayer();
         }
     },
-    punchFeind: function(dx, dy) {
+    punchFeind: function (dx, dy) {
         var zielx = this.x + dx;
         var ziely = this.y + dy;
         if (feindFeld(zielx, ziely)) {
@@ -54,7 +56,7 @@ var player = {
             feld[this.y + dy][this.x + dx] = 0;
         }
     },
-    digGold: function() {
+    digGold: function () {
         if (feld[this.y + dy][this.x + dx] == 3) {
             this.score++;
         }
@@ -71,7 +73,13 @@ weg_normal.src = "weg_1.png";
 
 var weg_gerade = new Image();
 weg_gerade.src = "weg_gerade.png";
+/**
+var weg_normal = new Image();
+weg_normal.src = "weg_1_big.png";
 
+var weg_gerade = new Image();
+weg_gerade.src = "weg_gerade_big.png";
+*/
 //var figur = new Image();
 player.img.src = "Skeleton test.png";
 
@@ -121,30 +129,101 @@ function zeichneFeld() {
     if (tileanimtcount > 2) {
         tileanimtcount = 0;
     }
+    /**
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < feld.length; i++)
+            for (let j = 0; j < feld[i].length; j++) {
+                let x = j * weg_normal.height + offsetX;
+                let y = i * weg_normal.height + offsetY;
+                let isoX = x - y + offsetX;
+                let isoY = (x + y) / 2;
+    
+                if (feld[i][j] == 0) //normale weg_normal
+                {
+                    weg_normalDraw(isoX, isoY);
+                }
+                if (feld[i][j] == 1) //Hindernis
+                {
+                    weg_geradeDraw(isoX, isoY);
+                }
+                if (feld[i][j] == 2) //Spielplayer
+                {
+                    playerDraw(isoX, isoY);
+                }
+                if (feld[i][j] == 3) //Feind
+                {
+                    feindDraw(isoX, isoY);
+                }
+            }
+    */
+    /**
+    context.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < feld.length; i++)
+            for (let j = 0; j < feld[i].length; j++) {
+                var passnummer = feld[i][j];
+                console.log(passnummer);
+                var passnummer_2 = passnummer.toString();
+                var feld_1 = Array.from(passnummer_2).map(Number);
+                console.log(realDigits);
+                let x = j * weg_normal.height + offsetX;
+                let y = i * weg_normal.height + offsetY;
+                let isoX = x - y + offsetX;
+                let isoY = (x + y) / 2;
+    
+                if (feld_1[0] == 0) //normale weg_normal
+                {
+                    weg_normalDraw(isoX, isoY);
+                }
+                if (feld_1[0] == 1) //Hindernis
+                {
+                    weg_geradeDraw(isoX, isoY);
+                }
+                if (feld_1[0] == 2) //Spielplayer
+                {
+                    playerDraw(isoX, isoY);
+                }
+                if (feld_1[0] == 3) //Feind
+                {
+                    feindDraw(isoX, isoY);
+                }
+            }
+    */
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < feld.length; i++)
         for (let j = 0; j < feld[i].length; j++) {
+
             let x = j * weg_normal.height + offsetX;
             let y = i * weg_normal.height + offsetY;
             let isoX = x - y + offsetX;
             let isoY = (x + y) / 2;
-            if (feld[i][j] == 0) //normale weg_normal
-            {
-                weg_normalDraw(isoX, isoY);
-            }
-            if (feld[i][j] == 1) //Hindernis
-            {
-                weg_geradeDraw(isoX, isoY);
-            }
-            if (feld[i][j] == 2) //Spielplayer
-            {
-                playerDraw(isoX, isoY);
-            }
-            if (feld[i][j] == 3) //Feind
-            {
-                feindDraw(isoX, isoY);
+
+            var passnummer = feld[i][j];
+            var passdigit = (passnummer * 1) % 10;
+            console.log(feld[i][j]);
+            console.log("null "+passdigit);
+
+
+
+            rotation = passdigit + 1;
+
+            passdigit = Math.round(passnummer / 10);
+            console.log("eins "+passdigit);
+            switch (passdigit) {
+                case 0:
+                    weg_normalDraw(isoX, isoY);
+                    break;
+                case 1:
+                    weg_geradeDraw(isoX, isoY);
+                    break;
+                case 2:
+                    playerDraw(isoX, isoY);
+                    break;
+                default:
+                    break;
             }
         }
+
+
     switch (pause) {
         case 0:
             update();
@@ -156,12 +235,14 @@ function zeichneFeld() {
 }
 
 function weg_normalDraw(isoX, isoY) {
-    context.drawImage(weg_normal, 62 + rotation, 0, 62, weg_normal.height, isoX + 40, isoY - 10, 62, weg_normal.height);
+    //context.drawImage(weg_normal, 62 + rotation, 0, 62, weg_normal.height, isoX + 40, isoY - 10, 62, weg_normal.height);
+    context.drawImage(weg_normal, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_normal.height, isoX + 40, isoY - 10, weg_normal.width / 4, weg_normal.height);
 }
 
-function weg_geradeDraw(isoX, isoY) {
-    //context.drawImage(weg_gerade, 49 + rotation, 0, 49, weg_gerade.height, isoX + 40, isoY - 10, 49, weg_gerade.height);
-    weg_normalDraw(isoX, isoY);
+function weg_geradeDraw(isoX, isoY) { /** Problemkind */
+    //context.drawImage(weg_gerade, 62 + rotation, 0, 62, weg_gerade.height, isoX + 40, isoY - 10, 62, weg_gerade.height);
+    //context.drawImage(weg_gerade, weg_normal.width/4 + rotation, 0, weg_normal.width/4, weg_gerade.height, isoX + 40, isoY - 10, weg_normal.width/4, weg_gerade.height);
+    context.drawImage(weg_gerade, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_gerade.height, isoX + 40, isoY - 21, weg_normal.width / 4, weg_gerade.height);
 }
 
 function playerDraw(isoX, isoY) {
@@ -170,7 +251,7 @@ function playerDraw(isoX, isoY) {
     for (let i = 0; i < animtcount; i++) {
         drawFrameX = drawFrameX + 24;
     }
-    context.drawImage(player.img, 24 + drawFrameX, 0, 24, player.img.height, isoX + 40, isoY - 10, 24, player.img.height);
+    context.drawImage(player.img, 24 + drawFrameX, 0, 24, player.img.height, isoX + 90, isoY - 10, 24, player.img.height);
 }
 
 function feindDraw(isoX, isoY) {
@@ -188,38 +269,38 @@ function update() {
     counter++;
 }
 
-window.onkeydown = function(e) {
+window.onkeydown = function (e) {
     var code = e.keyCode ? e.keyCode : e.which;
     switch (code) {
         default: break;
         //move
         case 87:
-                player.movePlayer(0, -1);
+            player.movePlayer(0, -1);
             break;
         case 83:
-                player.movePlayer(0, 1);
+            player.movePlayer(0, 1);
             break;
         case 68:
-                player.movePlayer(1, 0);
+            player.movePlayer(1, 0);
             break;
         case 65:
-                player.movePlayer(-1, 0);
+            player.movePlayer(-1, 0);
             break;
-            //punch
+        //punch
         case 104:
-                player.punchFeind(0, -1);
+            player.punchFeind(0, -1);
             console.log("punchKey");
             break;
         case 98:
-                player.punchFeind(0, 1);
+            player.punchFeind(0, 1);
             console.log("punchKey");
             break;
         case 102:
-                player.punchFeind(1, 0);
+            player.punchFeind(1, 0);
             console.log("punchKey");
             break;
         case 100:
-                player.punchFeind(-1, 0);
+            player.punchFeind(-1, 0);
             console.log("punchKey");
             break;
     }
