@@ -9,13 +9,13 @@ var pause = 0;
 var score = 0;
 var animtcount = 0;
 var tileanimtcount = 0;
-var rotation = 0;
+let rotationFeld = 1;
 for (let y = 0; y < spielfeldsize; y++) {
     feld[y] = [];
     for (let x = 0; x < spielfeldsize; x++) {
         var nextnummer = Math.round(Math.random());
-        var rotationgen = Math.round(Math.random(0, 3));
         //feld[y][x] = nextnummer;
+        var rotationgen = getRandomInt(0,4);
         var gennummer = nextnummer + '' + rotationgen;
         console.log(gennummer);
         feld[y][x] = gennummer;
@@ -80,8 +80,8 @@ weg_normal.src = "weg_1_big.png";
 var weg_gerade = new Image();
 weg_gerade.src = "weg_gerade_big.png";
 */
-//var figur = new Image();
-player.img.src = "Skeleton test.png";
+//player.img.src = "Skeleton test.png";
+player.img.src = "Ritter_Orange.png";
 
 
 //var offsetX = 25 * spielfeldsize;
@@ -99,6 +99,11 @@ function init() {
     player.setPlayer(); // Spielerfigur auf Startposition setzen 
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
 
 function freiesFeld(x, y) {
     if (y >= 0 && y < feld.length && x >= 0 && x < feld[y].length) {
@@ -188,6 +193,7 @@ function zeichneFeld() {
                 }
             }
     */
+   /*
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < feld.length; i++)
         for (let j = 0; j < feld[i].length; j++) {
@@ -199,14 +205,15 @@ function zeichneFeld() {
 
             var passnummer = feld[i][j];
             var passdigit = (passnummer * 1) % 10;
-            console.log(feld[i][j]);
-            console.log("null "+passdigit);
+            //console.log(feld[i][j]);
+            //console.log("null "+passdigit);
 
 
 
             rotation = passdigit + 1;
 
             passdigit = Math.round(passnummer / 10);
+            console.log("Fuck "+passnummer);
             console.log("eins "+passdigit);
             switch (passdigit) {
                 case 0:
@@ -222,7 +229,34 @@ function zeichneFeld() {
                     break;
             }
         }
+        **/
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < feld.length; i++)
+            for (let j = 0; j < feld[i].length; j++) {
+                let x = j * weg_normal.height + offsetX;
+                let y = i * weg_normal.height + offsetY;
+                let isoX = x - y + offsetX;
+                let isoY = (x + y) / 2;
 
+                rotationFeld = feld[i][j].toString().charAt(1);
+                let tile = feld[i][j].toString().charAt(0);
+
+                console.log("Rotation : " + rotationFeld);
+                console.log("Tile : " + tile);
+    
+                if (tile == 0) //normale weg_normal
+                {
+                    weg_normalDraw(isoX, isoY, rotationFeld);
+                }
+                if (tile == 1) //Hindernis
+                {
+                    weg_geradeDraw(isoX, isoY, rotationFeld);
+                }
+                if (tile == 2) //Spielplayer
+                {
+                    playerDraw(isoX, isoY, rotationFeld);
+                }
+            }
 
     switch (pause) {
         case 0:
@@ -234,35 +268,21 @@ function zeichneFeld() {
     }
 }
 
-function weg_normalDraw(isoX, isoY) {
+function weg_normalDraw(isoX, isoY, rotation) {
     //context.drawImage(weg_normal, 62 + rotation, 0, 62, weg_normal.height, isoX + 40, isoY - 10, 62, weg_normal.height);
     context.drawImage(weg_normal, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_normal.height, isoX + 40, isoY - 10, weg_normal.width / 4, weg_normal.height);
 }
 
-function weg_geradeDraw(isoX, isoY) { /** Problemkind */
+function weg_geradeDraw(isoX, isoY, rotation) { /** Problemkind */
     //context.drawImage(weg_gerade, 62 + rotation, 0, 62, weg_gerade.height, isoX + 40, isoY - 10, 62, weg_gerade.height);
     //context.drawImage(weg_gerade, weg_normal.width/4 + rotation, 0, weg_normal.width/4, weg_gerade.height, isoX + 40, isoY - 10, weg_normal.width/4, weg_gerade.height);
     context.drawImage(weg_gerade, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_gerade.height, isoX + 40, isoY - 21, weg_normal.width / 4, weg_gerade.height);
 }
 
-function playerDraw(isoX, isoY) {
-    weg_normalDraw(isoX, isoY);
-    let drawFrameX = 0;
-    for (let i = 0; i < animtcount; i++) {
-        drawFrameX = drawFrameX + 24;
-    }
-    context.drawImage(player.img, 24 + drawFrameX, 0, 24, player.img.height, isoX + 90, isoY - 10, 24, player.img.height);
-}
-
-function feindDraw(isoX, isoY) {
-    weg_normalDraw(isoX, isoY);
-    let drawFrameX = 0;
-    for (let i = 0; i < animtcount; i++) {
-        drawFrameX = drawFrameX + 24;
-
-    }
-    context.drawImage(feindIdel.img, 24 + drawFrameX, 0, 24, feindIdel.img.height, isoX + 40, isoY - 10, 24, feindIdel.img.height);
-
+function playerDraw(isoX, isoY, rotation) {
+    weg_normalDraw(isoX, isoY, rotation);
+    //context.drawImage(player.img, 24 + drawFrameX, 0, 24, player.img.height, isoX + 40, isoY - 10, 24, player.img.height);
+    context.drawImage(player.img, player.img.width / 4 * rotation, 0, player.img.width / 4, player.img.height, isoX + 90, isoY - 10, player.img.width / 4, player.img.height);
 }
 
 function update() {
