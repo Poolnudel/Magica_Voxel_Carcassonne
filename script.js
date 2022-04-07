@@ -269,8 +269,11 @@ function zeichneFeld() {
 }
 
 function weg_normalDraw(isoX, isoY, rotation) {
+    let hohe = weg_normal.height;
+    let weite = weg_normal.width / 4;
     //context.drawImage(weg_normal, 62 + rotation, 0, 62, weg_normal.height, isoX + 40, isoY - 10, 62, weg_normal.height);
-    context.drawImage(weg_normal, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_normal.height, isoX + 40, isoY - 10, weg_normal.width / 4, weg_normal.height);
+    //context.drawImage(weg_normal, weg_normal.width / 4 * rotation, 0, weg_normal.width / 4, weg_normal.height, isoX + 40, isoY - 10, weg_normal.width / 4, weg_normal.height);
+    context.drawImage(weg_normal, weite * rotation, 0, weite, hohe, isoX + 40, isoY - 10, weite, hohe);
 }
 
 function weg_geradeDraw(isoX, isoY, rotation) { /** Problemkind */
