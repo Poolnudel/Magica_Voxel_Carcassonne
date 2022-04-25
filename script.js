@@ -29,16 +29,14 @@ var player = {
 
     //score: 0,
     setPlayer: function () {
-        feld[this.y][this.x] = 2;
+        let rotationPlayer;
+        feld[this.y][this.x] = 2 /**+ rotationPlayer*/;
     },
     liftPlayer: function () {
-        feld[this.y][this.x] = 0;
+        let rotationFeldNachPlayer;
+        feld[this.y][this.x] = 0 /**+ rotationFeldNachPlayer*/;
     },
     movePlayer: function (dx, dy) {
-        /**Das ergibt alles keinen Sinn
-         * help
-         * me
-         */
         if (freiesFeld(player.x + dx, player.y + dy)) {
             player.liftPlayer();
             player.x += dx;
@@ -54,11 +52,6 @@ var player = {
             score++;
             //feld[zielx][ziely] = 0;
             feld[this.y + dy][this.x + dx] = 0;
-        }
-    },
-    digGold: function () {
-        if (feld[this.y + dy][this.x + dx] == 3) {
-            this.score++;
         }
     }
 }
@@ -81,8 +74,8 @@ var weg_gerade = new Image();
 weg_gerade.src = "weg_gerade_big.png";
 */
 //player.img.src = "Skeleton test.png";
-player.img.src = "Ritter_Orange.png";
-
+//player.img.src = "Ritter_Orange.png";
+player.img.src = "Ritter_Gruen_smol.png";
 
 //var offsetX = 25 * spielfeldsize;
 var offsetX = 400;
@@ -107,7 +100,8 @@ function getRandomInt(min, max) {
 
 function freiesFeld(x, y) {
     if (y >= 0 && y < feld.length && x >= 0 && x < feld[y].length) {
-        return (feld[y][x] <= 0);
+        let tile = feld[y][x].toString().charAt(0);
+        return (tile <= 0);
     } else {
         return false;
     }
@@ -134,102 +128,7 @@ function zeichneFeld() {
     if (tileanimtcount > 2) {
         tileanimtcount = 0;
     }
-    /**
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < feld.length; i++)
-            for (let j = 0; j < feld[i].length; j++) {
-                let x = j * weg_normal.height + offsetX;
-                let y = i * weg_normal.height + offsetY;
-                let isoX = x - y + offsetX;
-                let isoY = (x + y) / 2;
-    
-                if (feld[i][j] == 0) //normale weg_normal
-                {
-                    weg_normalDraw(isoX, isoY);
-                }
-                if (feld[i][j] == 1) //Hindernis
-                {
-                    weg_geradeDraw(isoX, isoY);
-                }
-                if (feld[i][j] == 2) //Spielplayer
-                {
-                    playerDraw(isoX, isoY);
-                }
-                if (feld[i][j] == 3) //Feind
-                {
-                    feindDraw(isoX, isoY);
-                }
-            }
-    */
-    /**
-    context.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < feld.length; i++)
-            for (let j = 0; j < feld[i].length; j++) {
-                var passnummer = feld[i][j];
-                console.log(passnummer);
-                var passnummer_2 = passnummer.toString();
-                var feld_1 = Array.from(passnummer_2).map(Number);
-                console.log(realDigits);
-                let x = j * weg_normal.height + offsetX;
-                let y = i * weg_normal.height + offsetY;
-                let isoX = x - y + offsetX;
-                let isoY = (x + y) / 2;
-    
-                if (feld_1[0] == 0) //normale weg_normal
-                {
-                    weg_normalDraw(isoX, isoY);
-                }
-                if (feld_1[0] == 1) //Hindernis
-                {
-                    weg_geradeDraw(isoX, isoY);
-                }
-                if (feld_1[0] == 2) //Spielplayer
-                {
-                    playerDraw(isoX, isoY);
-                }
-                if (feld_1[0] == 3) //Feind
-                {
-                    feindDraw(isoX, isoY);
-                }
-            }
-    */
-   /*
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < feld.length; i++)
-        for (let j = 0; j < feld[i].length; j++) {
 
-            let x = j * weg_normal.height + offsetX;
-            let y = i * weg_normal.height + offsetY;
-            let isoX = x - y + offsetX;
-            let isoY = (x + y) / 2;
-
-            var passnummer = feld[i][j];
-            var passdigit = (passnummer * 1) % 10;
-            //console.log(feld[i][j]);
-            //console.log("null "+passdigit);
-
-
-
-            rotation = passdigit + 1;
-
-            passdigit = Math.round(passnummer / 10);
-            console.log("Fuck "+passnummer);
-            console.log("eins "+passdigit);
-            switch (passdigit) {
-                case 0:
-                    weg_normalDraw(isoX, isoY);
-                    break;
-                case 1:
-                    weg_geradeDraw(isoX, isoY);
-                    break;
-                case 2:
-                    playerDraw(isoX, isoY);
-                    break;
-                default:
-                    break;
-            }
-        }
-        **/
         context.clearRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < feld.length; i++)
             for (let j = 0; j < feld[i].length; j++) {
@@ -285,7 +184,7 @@ function weg_geradeDraw(isoX, isoY, rotation) { /** Problemkind */
 function playerDraw(isoX, isoY, rotation) {
     weg_normalDraw(isoX, isoY, rotation);
     //context.drawImage(player.img, 24 + drawFrameX, 0, 24, player.img.height, isoX + 40, isoY - 10, 24, player.img.height);
-    context.drawImage(player.img, player.img.width / 4 * rotation, 0, player.img.width / 4, player.img.height, isoX + 90, isoY - 10, player.img.width / 4, player.img.height);
+    context.drawImage(player.img, player.img.width / 4 * rotation, 0, player.img.width / 4, player.img.height, isoX + 85, isoY - 15, player.img.width / 4, player.img.height);
 }
 
 function update() {
